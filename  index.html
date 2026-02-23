@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FontPair Pro — Curated Google Font Pairings for Designers</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f4f3f0;
+      --surface: #ffffff;
+      --border: #e5e3de;
+      --text: #1a1a1a;
+      --muted: #6b6867;
+      --accent: #5b4fcf;
+      --accent-hover: #4a3fb8;
+      --accent-light: #ede9ff;
+      --success: #16a34a;
+      --gold: #d97706;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 62px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 0 var(--border);
+    }
+    .logo { font-size: 19px; font-weight: 800; letter-spacing: -0.5px; }
+    .logo span { color: var(--accent); }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .plan-badge {
+      font-size: 12px; font-weight: 600; padding: 4px 12px;
+      border-radius: 20px; background: var(--accent-light); color: var(--accent);
+    }
+    .plan-badge.pro { background: #fef3c7; color: var(--gold); }
+    .btn-primary {
+      background: var(--accent); color: white; border: none;
+      padding: 8px 18px; border-radius: 8px; font-size: 13px;
+      font-weight: 600; cursor: pointer; transition: background 0.15s;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    /* ── HERO ── */
+    .hero {
+      max-width: 680px; margin: 60px auto 0;
+      padding: 0 24px; text-align: center;
+    }
+    .hero h1 {
+      font-size: 48px; font-weight: 800; letter-spacing: -2px;
+      line-height: 1.08; margin-bottom: 18px; color: var(--text);
+    }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero p {
+      font-size: 17px; color: var(--muted); line-height: 1.65;
+      margin-bottom: 36px;
+    }
+
+    /* ── PREVIEW INPUT ── */
+    .preview-wrap {
+      max-width: 540px; margin: 0 auto 48px; padding: 0 24px;
+    }
+    .preview-label {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 8px;
+    }
+    .preview-input {
+      width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 15px; outline: none;
+      background: white; transition: border-color 0.15s, box-shadow 0.15s;
+      color: var(--text);
+    }
+    .preview-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-light);
+    }
+
+    /* ── UPGRADE BANNER ── */
+    .upgrade-banner {
+      max-width: 1100px; margin: 0 auto 36px; padding: 0 24px;
+    }
+    .upgrade-inner {
+      background: linear-gradient(135deg, #5b4fcf 0%, #8b7cf8 100%);
+      border-radius: 14px; padding: 22px 28px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .upgrade-inner h3 { color: white; font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+    .upgrade-inner p { color: rgba(255,255,255,0.78); font-size: 13px; }
+    .btn-banner {
+      background: white; color: var(--accent); border: none;
+      padding: 10px 22px; border-radius: 8px; font-size: 14px;
+      font-weight: 700; cursor: pointer; white-space: nowrap;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .btn-banner:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.18); }
+
+    /* ── FILTERS ── */
+    .filters {
+      max-width: 1100px; margin: 0 auto 28px; padding: 0 24px;
+      display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+    }
+    .filters-label { font-size: 12px; font-weight: 600; color: var(--muted); margin-right: 4px; }
+    .filter-btn {
+      padding: 6px 16px; border-radius: 20px; border: 1.5px solid var(--border);
+      background: white; font-size: 13px; font-weight: 500; cursor: pointer;
+      transition: all 0.15s; color: var(--muted);
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .filter-btn.active {
+      background: var(--accent); color: white; border-color: var(--accent);
+    }
+
+    /* ── GRID ── */
+    .grid {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px 80px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: white; border-radius: 14px; border: 1px solid var(--border);
+      overflow: hidden; transition: box-shadow 0.2s, transform 0.2s;
+      position: relative;
+    }
+    .card:hover { box-shadow: 0 8px 36px rgba(0,0,0,0.09); transform: translateY(-2px); }
+    .card-preview {
+      padding: 28px 28px 22px; min-height: 165px; position: relative;
+    }
+    .card-heading {
+      font-size: 30px; line-height: 1.2; margin-bottom: 10px; letter-spacing: -0.3px;
+    }
+    .card-body-text { font-size: 14px; line-height: 1.75; color: #555; }
+    .card-footer {
+      padding: 13px 20px; border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fafaf8;
+    }
+    .card-font-name { font-size: 11.5px; color: var(--muted); line-height: 1.6; }
+    .card-font-name strong { color: var(--text); font-weight: 600; }
+    .card-tag {
+      font-size: 11px; background: var(--accent-light); color: var(--accent);
+      padding: 3px 10px; border-radius: 20px; font-weight: 600;
+    }
+    .card-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-copy {
+      padding: 5px 12px; font-size: 12px; font-weight: 600;
+      border: 1.5px solid var(--border); border-radius: 6px; background: white;
+      cursor: pointer; color: var(--muted); transition: all 0.15s;
+    }
+    .btn-copy:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-copy.copied { background: #dcfce7; color: var(--success); border-color: #86efac; }
+
+    /* ── LOCKED CARD ── */
+    .card.locked .card-preview { filter: blur(6px); user-select: none; pointer-events: none; }
+    .card.locked .card-footer { filter: blur(3px); pointer-events: none; }
+    .lock-overlay {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.5); cursor: pointer;
+      transition: background 0.15s; gap: 10px; z-index: 2;
+    }
+    .lock-overlay:hover { background: rgba(255,255,255,0.65); }
+    .lock-circle {
+      width: 46px; height: 46px; background: var(--accent); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; color: white;
+      font-size: 19px; box-shadow: 0 4px 18px rgba(91,79,207,0.45);
+      transition: transform 0.15s;
+    }
+    .lock-overlay:hover .lock-circle { transform: scale(1.08); }
+    .lock-label { font-size: 13px; font-weight: 700; color: var(--accent); }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.52);
+      backdrop-filter: blur(5px); display: flex; align-items: center;
+      justify-content: center; z-index: 1000; padding: 20px;
+    }
+    .modal {
+      background: white; border-radius: 20px; padding: 40px;
+      width: 100%; max-width: 450px;
+      box-shadow: 0 28px 80px rgba(0,0,0,0.25);
+      animation: slideUp 0.25s ease;
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .modal-header { text-align: center; margin-bottom: 24px; }
+    .modal-emoji { font-size: 38px; margin-bottom: 12px; }
+    .modal h2 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px; }
+    .modal-sub { color: var(--muted); font-size: 14px; line-height: 1.55; }
+
+    .pricing-box {
+      border: 2px solid var(--accent); border-radius: 12px; padding: 20px 20px 16px;
+      margin-bottom: 20px; background: var(--accent-light); position: relative;
+    }
+    .pricing-chip {
+      position: absolute; top: -11px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); color: white; font-size: 10px; font-weight: 800;
+      padding: 3px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.6px;
+    }
+    .pricing-price {
+      font-size: 38px; font-weight: 800; color: var(--accent); margin-bottom: 2px;
+    }
+    .pricing-price small { font-size: 15px; font-weight: 500; color: var(--muted); }
+    .features { list-style: none; margin-top: 12px; display: flex; flex-direction: column; gap: 7px; }
+    .features li { font-size: 13.5px; display: flex; align-items: center; gap: 8px; color: var(--text); }
+    .features li::before { content: "✓"; color: var(--accent); font-weight: 800; }
+
+    .demo-pill {
+      background: #fef9c3; border: 1px solid #fde047; border-radius: 8px;
+      padding: 9px 14px; font-size: 12px; color: #713f12; text-align: center; margin-bottom: 18px;
+    }
+    .form-field { margin-bottom: 14px; }
+    .form-field label { display: block; font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+    .form-field input {
+      width: 100%; padding: 10px 13px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.15s;
+      background: white; color: var(--text);
+    }
+    .form-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stripe-lock {
+      font-size: 12px; color: var(--muted); text-align: center;
+      margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .btn-pay {
+      width: 100%; background: var(--accent); color: white; border: none;
+      padding: 14px; border-radius: 10px; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background 0.15s; margin-bottom: 10px;
+    }
+    .btn-pay:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-pay:disabled { opacity: 0.7; cursor: default; }
+    .btn-ghost {
+      width: 100%; background: none; border: none; color: var(--muted);
+      font-size: 13px; cursor: pointer; padding: 8px; transition: color 0.15s;
+    }
+    .btn-ghost:hover { color: var(--text); }
+
+    /* ── SUCCESS ── */
+    .success-screen { text-align: center; padding: 12px 0; }
+    .success-check {
+      width: 68px; height: 68px; background: #dcfce7; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 30px; margin: 0 auto 20px;
+    }
+    .success-screen h2 { font-size: 26px; font-weight: 800; margin-bottom: 10px; }
+    .success-screen p { color: var(--muted); font-size: 15px; line-height: 1.5; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center; padding: 40px 24px;
+      font-size: 13px; color: var(--muted); border-top: 1px solid var(--border);
+    }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 34px; }
+      .header { padding: 0 16px; }
+      .upgrade-inner { flex-direction: column; text-align: center; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+// ── DATA ────────────────────────────────────────────────────────────────────
+
+const PAIRINGS = [
+  { id:1,  heading:'Playfair Display', body:'Lato',            category:'Serif',       tag:'Editorial',    free:true,  desc:'Classic and authoritative. Perfect for magazines, luxury brands, and editorial content.' },
+  { id:2,  heading:'Montserrat',       body:'Merriweather',    category:'Sans-Serif',  tag:'Modern Classic',free:true,  desc:'A timeless combination for blogs, portfolios, and professional websites.' },
+  { id:3,  heading:'Oswald',           body:'Open Sans',       category:'Display',     tag:'Bold Impact',  free:true,  desc:'High contrast and punchy. Great for sports, news sites, and bold brands.' },
+  { id:4,  heading:'Raleway',          body:'Source Sans Pro', category:'Sans-Serif',  tag:'Clean Tech',   free:true,  desc:'Elegant and functional. Ideal for SaaS products and tech startups.' },
+  { id:5,  heading:'Roboto Slab',      body:'Roboto',          category:'Serif',       tag:'Versatile',    free:true,  desc:'A Google classic. Works across virtually any project or industry.' },
+  { id:6,  heading:'Libre Baskerville',body:'Libre Franklin',  category:'Serif',       tag:'Professional', free:true,  desc:'Trustworthy and structured. Perfect for corporate, legal and financial content.' },
+  { id:7,  heading:'DM Serif Display', body:'DM Sans',         category:'Serif',       tag:'System Harmony',free:false,desc:'Designed as a matched system. Beautiful harmony between display and UI type.' },
+  { id:8,  heading:'Cormorant Garamond',body:'Proza Libre',    category:'Serif',       tag:'Luxury',       free:false, desc:'Refined and aristocratic. Exceptional for luxury fashion and high-end beauty brands.' },
+  { id:9,  heading:'Abril Fatface',    body:'Poppins',         category:'Display',     tag:'Playful Pop',  free:false, desc:'Fun and energetic. Great for creative agencies and youthful consumer brands.' },
+  { id:10, heading:'Space Grotesk',    body:'Space Mono',      category:'Monospace',   tag:'Tech',         free:false, desc:'Futuristic and technical. Perfect for developer tools, crypto, and fintech projects.' },
+  { id:11, heading:'Fraunces',         body:'Commissioner',    category:'Serif',       tag:'Contemporary', free:false, desc:'Warm and contemporary. Outstanding for food, hospitality, and lifestyle brands.' },
+  { id:12, heading:'Spectral',         body:'Karla',           category:'Serif',       tag:'Literary',     free:false, desc:'Intellectual and clear. Ideal for publishing, essays, and long-form reading experiences.' },
+  { id:13, heading:'Crimson Pro',      body:'Cabin',           category:'Serif',       tag:'Academic',     free:false, desc:'Scholarly yet approachable. Perfect for education and academic platforms.' },
+  { id:14, heading:'Josefin Sans',     body:'Josefin Slab',    category:'Display',     tag:'Geometric',    free:false, desc:'Perfectly geometric symmetry. A unique and cohesive typeface pairing system.' },
+  { id:15, heading:'Nunito',           body:'Nunito Sans',     category:'Sans-Serif',  tag:'Friendly',     free:false, desc:'Rounded and welcoming. Ideal for apps, dashboards, and B2C SaaS products.' },
+  { id:16, heading:'Syne',             body:'Jost',            category:'Display',     tag:'Avant-Garde',  free:false, desc:'Experimental and distinctive. For bold creative studios and art platforms.' },
+  { id:17, heading:'Arvo',             body:'PT Sans',         category:'Serif',       tag:'Sturdy',       free:false, desc:'Reliable and highly legible. Works well for news sites and long-form content.' },
+  { id:18, heading:'Bitter',           body:'Raleway',         category:'Serif',       tag:'News',         free:false, desc:'Crisp and journalistic. Great for editorial and news publications.' },
+  { id:19, heading:'Bebas Neue',       body:'Hind',            category:'Display',     tag:'Street Bold',  free:false, desc:'Strong and impactful. Perfect for fitness brands, events, and streetwear.' },
+  { id:20, heading:'Playfair Display SC',body:'Alice',         category:'Serif',       tag:'Vintage',      free:false, desc:'Elegant small caps with timeless body type. Exceptional for weddings and stationery.' },
+];
+
+const CATEGORIES = ['All', 'Serif', 'Sans-Serif', 'Display', 'Monospace'];
+
+// ── Load all Google Fonts upfront ────────────────────────────────────────────
+
+function loadFonts() {
+  const families = PAIRINGS.flatMap(p => [
+    `${p.heading.replace(/ /g,'+')}:wght@700;800`,
+    `${p.body.replace(/ /g,'+')}:wght@400;500`,
+  ]);
+  const unique = [...new Set(families)];
+  const url = `https://fonts.googleapis.com/css2?${unique.map(f=>`family=${f}`).join('&')}&display=swap`;
+  const link = document.createElement('link');
+  link.rel = 'stylesheet'; link.href = url;
+  document.head.appendChild(link);
+}
+
+// ── FontCard ─────────────────────────────────────────────────────────────────
+
+function FontCard({ p, preview, isPro, onUpgrade }) {
+  const [copied, setCopied] = useState(false);
+  const locked = !p.free && !isPro;
+
+  const headingText = preview.trim() || 'Beautiful Typography';
+  const bodyText = 'Great design starts with the right typeface. These fonts work together to create visual harmony and a clear hierarchy that draws readers in.';
+
+  function copyCSS(e) {
+    e.stopPropagation();
+    const css = `/* FontPair Pro — ${p.heading} + ${p.body} */\n@import url('https://fonts.googleapis.com/css2?family=${p.heading.replace(/ /g,'+')}:wght@700;800&family=${p.body.replace(/ /g,'+')}:wght@400;500&display=swap');\n\n.heading {\n  font-family: '${p.heading}', serif;\n  font-weight: 700;\n}\n\n.body {\n  font-family: '${p.body}', sans-serif;\n  font-weight: 400;\n}`;
+    navigator.clipboard.writeText(css).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  return (
+    <div className={`card ${locked ? 'locked' : ''}`}>
+      {locked && (
+        <div className="lock-overlay" onClick={onUpgrade}>
+          <div className="lock-circle">🔒</div>
+          <div className="lock-label">Unlock with Pro</div>
+        </div>
+      )}
+      <div className="card-preview">
+        <div className="card-heading" style={{fontFamily:`'${p.heading}', serif`}}>
+          {headingText}
+        </div>
+        <div className="card-body-text" style={{fontFamily:`'${p.body}', sans-serif`}}>
+          {bodyText}
+        </div>
+      </div>
+      <div className="card-footer">
+        <div>
+          <div className="card-font-name">Heading: <strong>{p.heading}</strong></div>
+          <div className="card-font-name">Body: <strong>{p.body}</strong></div>
+        </div>
+        <div className="card-actions">
+          <span className="card-tag">{p.tag}</span>
+          {!locked && (
+            <button className={`btn-copy ${copied?'copied':''}`} onClick={copyCSS}>
+              {copied ? '✓ Copied!' : 'Copy CSS'}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Payment Modal ─────────────────────────────────────────────────────────────
+
+function PayModal({ onClose, onSuccess }) {
+  const [step, setStep] = useState('pay');
+  const [loading, setLoading] = useState(false);
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => { setStep('success'); }, 1600);
+    setTimeout(() => { onSuccess(); onClose(); }, 3600);
+  }
+
+  if (step === 'success') return (
+    <div className="modal-overlay">
+      <div className="modal">
+        <div className="success-screen">
+          <div className="success-check">✓</div>
+          <h2>Welcome to Pro! 🎉</h2>
+          <p>All 20 curated font pairings are now unlocked.<br/>Happy designing, Cam!</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <div className="modal-emoji">✨</div>
+          <h2>Upgrade to Pro</h2>
+          <p className="modal-sub">Unlock all 20 expert font pairings, one-click CSS copy, and monthly new additions.</p>
+        </div>
+
+        <div className="pricing-box">
+          <div className="pricing-chip">Most Popular</div>
+          <div className="pricing-price">$9 <small>/ month</small></div>
+          <ul className="features">
+            <li>All 20 curated font pairings (14 more)</li>
+            <li>One-click CSS copy for every pairing</li>
+            <li>New pairings added every month</li>
+            <li>Priority email support</li>
+          </ul>
+        </div>
+
+        <div className="demo-pill">
+          🧪 Demo mode — no real payment will be processed
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-field">
+            <label>Email address</label>
+            <input type="email" defaultValue="cam@example.com" placeholder="you@example.com" required />
+          </div>
+          <div className="form-field">
+            <label>Card number</label>
+            <input type="text" defaultValue="4242 4242 4242 4242" placeholder="4242 4242 4242 4242" />
+          </div>
+          <div className="form-row">
+            <div className="form-field">
+              <label>Expiry</label>
+              <input type="text" defaultValue="12 / 28" placeholder="MM / YY" />
+            </div>
+            <div className="form-field">
+              <label>CVC</label>
+              <input type="text" defaultValue="123" placeholder="123" />
+            </div>
+          </div>
+          <div className="stripe-lock">🔒 Secured by Stripe</div>
+          <button className="btn-pay" type="submit" disabled={loading}>
+            {loading ? 'Processing payment…' : 'Pay $9 / month'}
+          </button>
+          <button className="btn-ghost" type="button" onClick={onClose}>No thanks</button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// ── App ───────────────────────────────────────────────────────────────────────
+
+function App() {
+  const [preview, setPreview]     = useState('Beautiful Typography');
+  const [category, setCategory]   = useState('All');
+  const [isPro, setIsPro]         = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => { loadFonts(); }, []);
+
+  const displayed = category === 'All' ? PAIRINGS : PAIRINGS.filter(p => p.category === category);
+  const lockedCount = PAIRINGS.filter(p => !p.free).length;
+
+  return (
+    <>
+      {/* Header */}
+      <header className="header">
+        <div className="logo">Font<span>Pair</span> Pro</div>
+        <div className="header-right">
+          {isPro
+            ? <span className="plan-badge pro">✨ Pro — All Access</span>
+            : <span className="plan-badge">Free — 6 of 20 pairings</span>
+          }
+          {!isPro && (
+            <button className="btn-primary" onClick={() => setShowModal(true)}>
+              Upgrade to Pro →
+            </button>
+          )}
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="hero">
+        <h1>Find the perfect<br /><em>font pairing.</em></h1>
+        <p>
+          {PAIRINGS.length} expertly curated Google Font combinations for designers.
+          Preview in real time, filter by style, and copy the CSS in one click.
+        </p>
+      </section>
+
+      {/* Preview Input */}
+      <div className="preview-wrap">
+        <div className="preview-label">Preview Text</div>
+        <input
+          className="preview-input"
+          value={preview}
+          onChange={e => setPreview(e.target.value)}
+          placeholder="Type your heading text…"
+          maxLength={50}
+        />
+      </div>
+
+      {/* Upgrade Banner */}
+      {!isPro && (
+        <div className="upgrade-banner">
+          <div className="upgrade-inner">
+            <div>
+              <h3>Unlock {lockedCount} more pairings with Pro</h3>
+              <p>Instant CSS copy, new monthly additions, priority support — just $9/month.</p>
+            </div>
+            <button className="btn-banner" onClick={() => setShowModal(true)}>
+              Get Pro — $9/mo
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Category Filters */}
+      <div className="filters">
+        <span className="filters-label">Filter:</span>
+        {CATEGORIES.map(cat => (
+          <button
+            key={cat}
+            className={`filter-btn ${category === cat ? 'active' : ''}`}
+            onClick={() => setCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Cards Grid */}
+      <div className="grid">
+        {displayed.map(p => (
+          <FontCard
+            key={p.id}
+            p={p}
+            preview={preview}
+            isPro={isPro}
+            onUpgrade={() => setShowModal(true)}
+          />
+        ))}
+      </div>
+
+      {/* Footer */}
+      <footer className="footer">
+        <p>FontPair Pro — built with React &amp; Google Fonts.<br/>
+        To go live: connect <a href="https://stripe.com" target="_blank" rel="noopener">Stripe</a> for real payments and deploy to <a href="https://vercel.com" target="_blank" rel="noopener">Vercel</a> or <a href="https://netlify.com" target="_blank" rel="noopener">Netlify</a>.</p>
+      </footer>
+
+      {/* Modal */}
+      {showModal && (
+        <PayModal
+          onClose={() => setShowModal(false)}
+          onSuccess={() => setIsPro(true)}
+        />
+      )}
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
