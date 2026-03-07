@@ -274,6 +274,49 @@
     }
     .footer a { color: var(--accent); text-decoration: none; }
 
+    /* ── NOTION MODAL ── */
+    .modal-lg { max-width: 580px; }
+    .notion-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+    .notion-tab {
+      flex: 1; padding: 10px; border-radius: 8px; border: 1.5px solid var(--border);
+      background: white; font-size: 14px; font-weight: 600; cursor: pointer;
+      color: var(--muted); transition: all 0.15s;
+    }
+    .notion-tab.active { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+    .notion-tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+    .form-field textarea {
+      width: 100%; padding: 10px 13px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 14px; outline: none; transition: border-color 0.15s;
+      background: white; color: var(--text); resize: vertical; font-family: inherit;
+    }
+    .form-field textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); }
+    .notion-settings {
+      background: #f8f8f6; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 16px; margin-bottom: 14px;
+    }
+    .notion-settings-label {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 12px;
+    }
+    .notion-settings .form-field { margin-bottom: 10px; }
+    .notion-settings .form-field:last-child { margin-bottom: 0; }
+    .notion-doc-preview {
+      background: #f8f8f6; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 20px; margin-top: 18px; font-family: Georgia, serif;
+    }
+    .notion-doc-preview h3 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+    .notion-doc-preview .preview-meta { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+    .notion-doc-preview table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .notion-doc-preview td { padding: 6px 10px; border: 1px solid var(--border); }
+    .notion-doc-preview td:first-child { font-weight: 600; width: 40%; background: #f0eeeb; }
+    .btn-notion {
+      background: #1a1a1a; color: white; border: none;
+      padding: 8px 16px; border-radius: 8px; font-size: 13px;
+      font-weight: 600; cursor: pointer; transition: background 0.15s; display: flex;
+      align-items: center; gap: 6px;
+    }
+    .btn-notion:hover { background: #333; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 600px) {
       .hero h1 { font-size: 34px; }
@@ -461,13 +504,194 @@ function PayModal({ onClose, onSuccess }) {
   );
 }
 
+// ── Notion Modal ──────────────────────────────────────────────────────────────
+
+function NotionModal({ onClose }) {
+  const [docType, setDocType]       = useState('contract');
+  const [step, setStep]             = useState('form');
+  const [loading, setLoading]       = useState(false);
+
+  // Shared fields
+  const [clientName, setClientName] = useState('');
+  const [projectName, setProjectName] = useState('');
+
+  // Contract fields
+  const [startDate, setStartDate]   = useState(new Date().toISOString().split('T')[0]);
+  const [rate, setRate]             = useState('');
+  const [scope, setScope]           = useState('');
+
+  // Invoice fields
+  const [invoiceNum, setInvoiceNum] = useState('INV-001');
+  const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split('T')[0]);
+  const [dueDate, setDueDate]       = useState('');
+  const [services, setServices]     = useState('');
+  const [total, setTotal]           = useState('');
+
+  // Notion settings
+  const [notionKey, setNotionKey]   = useState('');
+  const [notionPageId, setNotionPageId] = useState('');
+
+  function handleCreate(e) {
+    e.preventDefault();
+    setLoading(true);
+    // Demo: simulate Notion API call
+    setTimeout(() => setStep('success'), 1800);
+  }
+
+  if (step === 'success') return (
+    <div className="modal-overlay">
+      <div className="modal modal-lg">
+        <div className="success-screen">
+          <div className="success-check">✓</div>
+          <h2>{docType === 'contract' ? 'Contract' : 'Invoice'} Created!</h2>
+          <p>
+            Your {docType} for <strong>{clientName || 'the client'}</strong>
+            {projectName ? ` — ${projectName}` : ''} has been created in Notion.
+            <br />Check your Notion workspace to view and share the document.
+          </p>
+          <div className="notion-doc-preview">
+            <h3>{docType === 'contract' ? '📝' : '🧾'} {docType === 'contract' ? 'Design Contract' : `Invoice ${invoiceNum}`}</h3>
+            <div className="preview-meta">
+              {docType === 'contract' ? `Project: ${projectName || '—'} · Start: ${startDate}` : `Client: ${clientName || '—'} · Due: ${dueDate || '—'}`}
+            </div>
+            <table>
+              {docType === 'contract' ? (
+                <tbody>
+                  <tr><td>Client</td><td>{clientName || '—'}</td></tr>
+                  <tr><td>Project</td><td>{projectName || '—'}</td></tr>
+                  <tr><td>Start Date</td><td>{startDate}</td></tr>
+                  <tr><td>Rate</td><td>{rate || '—'}</td></tr>
+                  <tr><td>Scope of Work</td><td>{scope || '—'}</td></tr>
+                </tbody>
+              ) : (
+                <tbody>
+                  <tr><td>Invoice #</td><td>{invoiceNum}</td></tr>
+                  <tr><td>Client</td><td>{clientName || '—'}</td></tr>
+                  <tr><td>Project</td><td>{projectName || '—'}</td></tr>
+                  <tr><td>Invoice Date</td><td>{invoiceDate}</td></tr>
+                  <tr><td>Due Date</td><td>{dueDate || '—'}</td></tr>
+                  <tr><td>Services</td><td>{services || '—'}</td></tr>
+                  <tr><td>Total</td><td><strong>{total || '—'}</strong></td></tr>
+                </tbody>
+              )}
+            </table>
+          </div>
+          <button className="btn-primary" style={{marginTop:'22px'}} onClick={onClose}>Done</button>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal modal-lg" onClick={e => e.stopPropagation()}>
+        <div className="modal-header">
+          <div className="modal-emoji">{docType === 'contract' ? '📝' : '🧾'}</div>
+          <h2>Create in Notion</h2>
+          <p className="modal-sub">Generate a professional document and save it directly to your Notion workspace.</p>
+        </div>
+
+        <div className="notion-tabs">
+          <button type="button" className={`notion-tab ${docType === 'contract' ? 'active' : ''}`} onClick={() => setDocType('contract')}>
+            📝 Contract
+          </button>
+          <button type="button" className={`notion-tab ${docType === 'invoice' ? 'active' : ''}`} onClick={() => setDocType('invoice')}>
+            🧾 Invoice
+          </button>
+        </div>
+
+        <div className="demo-pill">
+          🔌 Demo mode — add your Notion integration token below to create a real page
+        </div>
+
+        <form onSubmit={handleCreate}>
+          <div className="form-row">
+            <div className="form-field">
+              <label>Client Name</label>
+              <input type="text" value={clientName} onChange={e => setClientName(e.target.value)} placeholder="Acme Corp" required />
+            </div>
+            <div className="form-field">
+              <label>Project Name</label>
+              <input type="text" value={projectName} onChange={e => setProjectName(e.target.value)} placeholder="Brand Redesign" required />
+            </div>
+          </div>
+
+          {docType === 'contract' ? (
+            <>
+              <div className="form-row">
+                <div className="form-field">
+                  <label>Start Date</label>
+                  <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} required />
+                </div>
+                <div className="form-field">
+                  <label>Rate / Fee</label>
+                  <input type="text" value={rate} onChange={e => setRate(e.target.value)} placeholder="$5,000 flat or $150/hr" />
+                </div>
+              </div>
+              <div className="form-field">
+                <label>Scope of Work</label>
+                <textarea value={scope} onChange={e => setScope(e.target.value)} placeholder="Typography consultation, font selection, CSS deliverables…" rows="3" />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="form-row">
+                <div className="form-field">
+                  <label>Invoice #</label>
+                  <input type="text" value={invoiceNum} onChange={e => setInvoiceNum(e.target.value)} placeholder="INV-001" required />
+                </div>
+                <div className="form-field">
+                  <label>Invoice Date</label>
+                  <input type="date" value={invoiceDate} onChange={e => setInvoiceDate(e.target.value)} required />
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-field">
+                  <label>Due Date</label>
+                  <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
+                </div>
+                <div className="form-field">
+                  <label>Total Amount</label>
+                  <input type="text" value={total} onChange={e => setTotal(e.target.value)} placeholder="$1,500.00" required />
+                </div>
+              </div>
+              <div className="form-field">
+                <label>Services Rendered</label>
+                <textarea value={services} onChange={e => setServices(e.target.value)} placeholder="Typography audit, font pairing recommendations, CSS delivery…" rows="3" />
+              </div>
+            </>
+          )}
+
+          <div className="notion-settings">
+            <div className="notion-settings-label">Notion Integration (optional for demo)</div>
+            <div className="form-field">
+              <label>Integration Token</label>
+              <input type="password" value={notionKey} onChange={e => setNotionKey(e.target.value)} placeholder="secret_xxxxxxxxxxxxxxxxxxxx" />
+            </div>
+            <div className="form-field">
+              <label>Parent Page ID</label>
+              <input type="text" value={notionPageId} onChange={e => setNotionPageId(e.target.value)} placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" />
+            </div>
+          </div>
+
+          <button className="btn-pay" type="submit" disabled={loading}>
+            {loading ? 'Creating in Notion…' : `Create ${docType === 'contract' ? 'Contract' : 'Invoice'} in Notion`}
+          </button>
+          <button className="btn-ghost" type="button" onClick={onClose}>Cancel</button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 
 function App() {
-  const [preview, setPreview]     = useState('Beautiful Typography');
-  const [category, setCategory]   = useState('All');
-  const [isPro, setIsPro]         = useState(false);
-  const [showModal, setShowModal] = useState(false);
+  const [preview, setPreview]           = useState('Beautiful Typography');
+  const [category, setCategory]         = useState('All');
+  const [isPro, setIsPro]               = useState(false);
+  const [showModal, setShowModal]       = useState(false);
+  const [showNotionModal, setShowNotionModal] = useState(false);
 
   useEffect(() => { loadFonts(); }, []);
 
@@ -484,6 +708,9 @@ function App() {
             ? <span className="plan-badge pro">✨ Pro — All Access</span>
             : <span className="plan-badge">Free — 6 of 20 pairings</span>
           }
+          <button className="btn-notion" onClick={() => setShowNotionModal(true)}>
+            <span>N</span> Create Doc
+          </button>
           {!isPro && (
             <button className="btn-primary" onClick={() => setShowModal(true)}>
               Upgrade to Pro →
@@ -561,12 +788,17 @@ function App() {
         To go live: connect <a href="https://stripe.com" target="_blank" rel="noopener">Stripe</a> for real payments and deploy to <a href="https://vercel.com" target="_blank" rel="noopener">Vercel</a> or <a href="https://netlify.com" target="_blank" rel="noopener">Netlify</a>.</p>
       </footer>
 
-      {/* Modal */}
+      {/* Pay Modal */}
       {showModal && (
         <PayModal
           onClose={() => setShowModal(false)}
           onSuccess={() => setIsPro(true)}
         />
+      )}
+
+      {/* Notion Modal */}
+      {showNotionModal && (
+        <NotionModal onClose={() => setShowNotionModal(false)} />
       )}
     </>
   );
